@@ -1,0 +1,25 @@
+{
+  "name": "csv-to-db",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhaynpai/csv-to-db.git"
+  },
+  "author": "Ayush024 <ayush@stepsetgo.com>",
+  "license": "MIT",
+  "description": "Migrate data from a CSV to Database",
+  "bugs": {
+    "url": "https://github.com/abhaynpai/csv-to-db/issues"
+  },
+  "homepage": "https://github.com/abhaynpai/csv-to-db#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "mongoose": "^5.13.3"
+  }
+}
