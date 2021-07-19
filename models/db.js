@@ -1,12 +1,15 @@
 let MongoClient = require('mongodb').MongoClient;
-// const Usermodel = require('./user_data');
 
-let dbname, collection, client, url;
+let dbname, collection, client, url, dbtype;
 
 exports.passData = async (data) => {
 
     dbname = data.database;
-    url = "mongodb://localhost:27017/";
+
+    dbtype = data.dbtype;
+
+    url = `${dbtype}://localhost:27017/`;
+
     collection = data.collection;
 
 };
@@ -26,7 +29,7 @@ exports.addToDb = async (user) => {
         const result = await movies.insertOne(user);
 
     } finally {
-        console.log('details added to DB');
+        
     }
 
 };

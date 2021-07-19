@@ -9,7 +9,7 @@ exports.addDetailstoDb = async (arguments) => {
             let dataArray = data.split(/\r?\n/);
 
             for (let i = 1; i < dataArray.length; i++) {
-                
+
                 let userData = dataArray[i].split(",");
 
                 const user = {
@@ -22,7 +22,7 @@ exports.addDetailstoDb = async (arguments) => {
             };
 
         });
-        
+
 
     } catch (err) {
         console.log(err);
