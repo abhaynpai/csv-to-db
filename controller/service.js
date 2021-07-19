@@ -1,24 +1,28 @@
 const UserModel = require('../models/db');
 const fs = require('fs');
-const csv = require('csv-parser');
 
 exports.addDetailstoDb = async (arguments) => {
     try {
-        fs.createReadStream(arguments[9])
-            .pipe(csv())
 
-            .on('data', function (row) {
+        fs.readFile(arguments.filepath, 'utf8', function (err, data) {
+
+            let dataArray = data.split(/\r?\n/);
+
+            for (let i = 1; i < dataArray.length; i++) {
+                
+                let userData = dataArray[i].split(",");
+
                 const user = {
-                    first_name: row.first_name,
-                    last_name: row.last_name,
-                    date_of_birth: row.date_of_birth
+                    first_name: userData[0],
+                    last_name: userData[1],
+                    date_of_birth: userData[2]
                 }
-                UserModel.addToDb(user);
-            })
 
-            .on('end', function () {
-                console.log('users added');
-            })
+                UserModel.addToDb(user);
+            };
+
+        });
+        
 
     } catch (err) {
         console.log(err);

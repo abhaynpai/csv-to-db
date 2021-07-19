@@ -1,16 +1,17 @@
-const express = require('express');
+const http = require('http');
+const server = http.createServer();
 const controller = require('./controller/service');
 const db = require('./models/db');
-const app = express();
-const port = 3000;
+const yargs = require('yargs');
+const port = 3001;
 
-var arguments = process.argv;
+var arguments = yargs.argv;
 // controller.test(arguments);
 db.passData(arguments);
 
 controller.addDetailstoDb(arguments);
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
 });
 

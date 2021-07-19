@@ -1,36 +1,32 @@
-const mongoose = require('mongoose');
-const Usermodel = require('./user_data');
+let MongoClient = require('mongodb').MongoClient;
+// const Usermodel = require('./user_data');
 
-let model;
+let dbname, collection, client, url;
 
 exports.passData = async (data) => {
-    
-    const dbname = await data[5];
 
-    const connection = mongoose.connect(`mongodb://localhost:27017/${dbname}`, {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        useUnifiedTopology: true,
-    })
-        .then(() => console.log(`DB connection successful`));
-
-    // console.log(Model);
-    // return Model;
-    model = await Usermodel.getUserCollection(data);
+    dbname = data.database;
+    url = "mongodb://localhost:27017/";
+    collection = data.collection;
 
 };
 
 //to add user Data
 exports.addToDb = async (user) => {
-    let userData = await model.create(user);
-    console.log(userData);
-}
 
-//to get user data
-exports.getData = async (req, res) => {
+    try {
+        client = new MongoClient(url);
 
-    let model = await UserModel.Model.find({}, { _id: 0 });
+        await client.connect();
 
-    console.log(model);
-}
+        const database = client.db("User");
+
+        const movies = database.collection("movies");
+
+        const result = await movies.insertOne(user);
+
+    } finally {
+        console.log('details added to DB');
+    }
+
+};
