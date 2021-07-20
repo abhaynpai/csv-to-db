@@ -1,0 +1,12 @@
+{
+  "name": "csv-to-db",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/abhaynpai/csv-to-db.git",
+  "author": "Ayush024 <ayush@stepsetgo.com>",
+  "license": "MIT",
+  "dependencies": {
+    "mongodb": "^4.0.0",
+    "yargs": "^17.0.1"
+  }
+}
