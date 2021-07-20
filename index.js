@@ -61,7 +61,7 @@ const parseFile = async () => {
         }
 
         //setup the DB connection
-        var client = new mongo(`${DB_TYPE}://localhst:27017`);
+        var client = new mongo(`${DB_TYPE}://localhost:27017`);
         client.connect();
         const database = client.db(DB_NAME);
         const collection = database.collection(COLLECTION_NAME);
@@ -77,6 +77,7 @@ const parseFile = async () => {
         const neededColumns = [];
 
         for await (const line of rl) {
+
             if (rowCount == 0) {
                 headers = line.split(',');
 
