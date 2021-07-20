@@ -15,44 +15,55 @@ Follow the following given parameter to use this tool -
     `);
 };
 
-const printColumnHelp = () => {
-    console.log(`
-Please provide _id in column inorder to prevent Key Duplication Error
-    `)
-}
-
 const parseFile = async () => {
 
     const FILE_PATH = arguments.filepath;
-
     const DB_TYPE = arguments.dbtype;
-
     const DB_NAME = arguments.database;
-
     const COLLECTION_NAME = arguments.collection;
-
-    const COLUMNS = arguments.columns.split(",");
-
-    if (!FILE_PATH || !DB_TYPE || !DB_NAME || !COLLECTION_NAME) {
-        console.error('No correct value provided');
-        printHelp();
-        return;
-    }
-
-    if (!COLUMNS.includes("_id")){
-        console.error('No correct value provided');
-        printColumnHelp();
-        return;
-    }
+    const COLUMNS = arguments.columns;
 
     try {
 
-        client = new mongo(`${DB_TYPE}://localhost:27017`);
+        if (!FILE_PATH || typeof FILE_PATH !== 'string') {
+            console.error('File Path is not provided');
+            printHelp();
+            return;
+        }
 
+        if (!DB_TYPE || typeof DB_TYPE !== 'string') {
+            console.error('DB Type is not provided');
+            printHelp();
+            return;
+        }
+        if (!DB_NAME || typeof DB_NAME !== 'string') {
+            console.error('DB Name is not provided');
+            printHelp();
+            return;
+        }
+        if (!COLLECTION_NAME || typeof COLLECTION_NAME !== 'string') {
+            console.error('Collection name is not provided');
+            printHelp();
+            return;
+        }
+
+        if (!COLUMNS || typeof COLUMNS !== 'string') {
+            console.error('Columns are not provided');
+            printHelp();
+            return;
+        }
+
+        const documentColumns = COLUMNS.split(",");
+
+        if (!documentColumns.includes("_id")) {
+            console.error('Please provide _id in column inorder to prevent Key Duplication Error');
+            return;
+        }
+
+        //setup the DB connection
+        var client = new mongo(`${DB_TYPE}://localhst:27017`);
         client.connect();
-
         const database = client.db(DB_NAME);
-
         const collection = database.collection(COLLECTION_NAME);
 
         const rl = readline.createInterface({
@@ -60,44 +71,53 @@ const parseFile = async () => {
             crlfDelay: Infinity
         });
 
-        let user = {};
-
+        const document = {};
         let headers;
-
         let rowCount = 0;
-        
-        let needed_columns = [];
+        const neededColumns = [];
 
         for await (const line of rl) {
             if (rowCount == 0) {
                 headers = line.split(',');
 
                 for (let j = 0; j < headers.length; j++) {
-
-                    if (COLUMNS.includes(headers[j])) {
-                        needed_columns.push(j)
+                    if (documentColumns.includes(headers[j])) {
+                        neededColumns.push(j)
                     }
                 }
                 rowCount += 1;
+
             } else {
+                const rows = line.split(',');
 
-                rows = line.split(',');
-
-                for (let j = 0; j < needed_columns.length; j++) {
-                    var name = headers[needed_columns[j]]
-                    user[name] = rows[j]
+                for (let j = 0; j < neededColumns.length; j++) {
+                    var name = headers[neededColumns[j]]
+                    document[name] = rows[j]
                 }
 
-                const result = await collection.insertOne(user);
+                try {
+                    const result = await collection.insertOne(document);
+                    console.log(result);
+                } catch (err) {
+                    console.error(err.message);
+                }
             }
-
         }
 
+        //  close the DB connection
+        client.close();
+
     } catch (err) {
-        console.log(err);
+        if (err.message.includes('connected')) {
+            console.error('MongoDB Connection Error');
+            return;
+        }
+        else {
+            console.log(err.message);
+            printHelp();
+            return;
+        }
     }
-
 };
-
 
 parseFile();
